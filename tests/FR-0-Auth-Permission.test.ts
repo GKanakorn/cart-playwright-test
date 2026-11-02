@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createPaidOrder, loginadmin, logincus_normal, logincus_prime } from './helper.function.test'
+import { createPaidOrder, loginadmin, logincus_normal, logincus_prime } from './helper.function';
 
 test('has title', async ({ page }) => {
     await page.goto('http://localhost:3000');
@@ -214,7 +214,7 @@ test('FR-0.3.2 access /admin/coupons with customer role', async ({ page }) => {
     await logincus_normal(page);
     await expect(page).toHaveURL(/\/products$/);
     await expect(page.getByTestId('page-products')).toBeVisible();
-    
+
     await page.goto('http://localhost:3000/admin/coupons');
     await expect(page).toHaveURL(/\/products$/);
     await expect(page.getByTestId('page-products')).toBeVisible();
