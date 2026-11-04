@@ -9,9 +9,6 @@ async function loginAsNormalCustomer(page: Page) {
     await page.getByTestId('login-username').fill('cus_normal')
     await page.getByTestId('login-password').fill('normal123')
     await page.getByTestId('login-submit').click()
-    //await expect(page).toHaveURL(/\/products$/)
-    //await expect(page.getByTestId('page-products')).toBeVisible({ timeout: 60000 })
-    //await expect(page.getByTestId('product-row-P1')).toBeVisible({ timeout: 60000 })
 }
 
 async function loginAsPrimeCustomer(page: Page) {
@@ -19,9 +16,6 @@ async function loginAsPrimeCustomer(page: Page) {
     await page.getByTestId('login-username').fill('cus_prime')
     await page.getByTestId('login-password').fill('prime123')
     await page.getByTestId('login-submit').click()
-    //await expect(page).toHaveURL(/\/products$/)
-    //await expect(page.getByTestId('page-products')).toBeVisible({ timeout: 60000 })
-    //await expect(page.getByTestId('product-row-P1')).toBeVisible({ timeout: 60000 })
 }
 
 async function loginAsAdmin(page: Page) {
@@ -29,8 +23,6 @@ async function loginAsAdmin(page: Page) {
     await page.getByTestId('login-username').fill('admin01')
     await page.getByTestId('login-password').fill('admin123')
     await page.getByTestId('login-submit').click()
-    //await expect(page).toHaveURL(/\/admin\/products$/)
-    //await expect(page.getByTestId('page-admin-products')).toBeVisible({ timeout: 60000 })
 }
 
 async function addProductAndCheckoutAsCustomer_Normal(page: Page, username: string, productId: string, quantity: number) {
@@ -38,26 +30,6 @@ async function addProductAndCheckoutAsCustomer_Normal(page: Page, username: stri
     await page.getByTestId('login-username').fill(username)
     await page.getByTestId('login-password').fill('normal123')
     await page.getByTestId('login-submit').click()
-    //await expect(page).toHaveURL(/\/products$/)
-
-    const product = page.getByTestId(`product-row-${productId}`)
-    await product.getByTestId('product-add-qty').fill(quantity.toString())
-    await product.getByTestId('product-add-button').click()
-    await expect(page.getByTestId('product-add-success-message')).toContainText('เพิ่มสินค้าลงตะกร้าแล้ว')
-    await page.getByTestId('nav-cart').click()
-    await page.getByTestId('zone-select').selectOption('inCity')
-    await page.getByTestId('speed-select').selectOption('standard')
-    await page.getByTestId('checkout-button').click()
-    await expect(page.getByTestId('page-checkout')).toBeVisible({ timeout: 60000 });
-    await page.getByTestId('logout-button').click()
-}
-
-async function addProductAndCheckoutAsCustomer_Prime(page: Page, username: string, productId: string, quantity: number) {
-    await page.goto(`${baseURL}/login`)
-    await page.getByTestId('login-username').fill(username)
-    await page.getByTestId('login-password').fill('prime123')
-    await page.getByTestId('login-submit').click()
-    //await expect(page).toHaveURL(/\/products$/)
 
     const product = page.getByTestId(`product-row-${productId}`)
     await product.getByTestId('product-add-qty').fill(quantity.toString())
@@ -85,10 +57,10 @@ test('AC-1: Given cus_normal อยู่ stage ตะกร้า และต�
 
     await page.getByTestId('nav-cart').click()
     await expect(page.getByText('ตะกร้าว่าง')).toBeVisible()
-    await expect(page.locator('cart-line-P1')).toHaveCount(0)
+    await expect(page.getByTestId('cart-line-P1')).toHaveCount(0)
 })
 
-test('AC-2: Given ตะกร้าของ cus_normal มี P1 quantity 8 When เรียก addItem(P1, 3) Then ระบบปฏิเสธด้วย INSUFFICIENT_STOCK และ P1 ยังมี quantity 8', async ({ page }) => {
+test('AC-2: Given ตะกร้าของ cus_normal มี P1 quantity 8 When เรียก addItem(P1, 3) Then ระบบปฏิเสธด้วย QTY_OUT_OF_RANGE และ P1 ยังมี quantity 8', async ({ page }) => {
     await loginAsNormalCustomer(page);
     await page.getByTestId('nav-products').click();
 
@@ -116,7 +88,7 @@ test('AC-2: Given ตะกร้าของ cus_normal มี P1 quantity 8 Wh
     ).toHaveValue('8')
 })
 
-test('AC-3: Given ตะกร้าของ cus_normal มี P2 quantity 2 When เรียก addItem(P2, 2) Then ระบบปฏิเสธด้วย QTY_OUT_OF_RANGE และ P2 ยังมี quantity 2', async ({ page }) => {
+test('AC-3: Given ตะกร้าของ cus_normal มี P2 quantity 2 When เรียก addItem(P2, 2) Then ระบบปฏิเสธด้วย INSUFFICIENT_STOCK และ P2 ยังมี quantity 2', async ({ page }) => {
     await loginAsNormalCustomer(page);
     await page.getByTestId('nav-products').click();
 
@@ -391,9 +363,9 @@ test.describe('AC-11', () => {
 
         await loginAsPrimeCustomer(page);
         await page.getByTestId('nav-products').click();
-        await page.getByTestId('nav-products').click();
-        await expect(page.getByTestId('product-row-P2')).toHaveCount(0);
-
+        await expect(page.getByTestId('product-row-P2').getByTestId('product-availability')).toContainText('ไม่พร้อมขาย');
+        await page.getByTestId('product-row-P2').getByTestId('product-add-button').click();
+        await expect(page.getByTestId('product-add-error-P2')).toContainText('สินค้านี้ไม่พร้อมขาย');
         await page.getByTestId('nav-cart').click();
         await expect(page.getByTestId('app-message')).toContainText('ตะกร้าว่าง');
     });
@@ -415,6 +387,7 @@ test('AC-12:Given cus_normal อยู่ stage ชำระเงิน กั�
     await page.getByTestId('checkout-button').click();
     await expect(page).toHaveURL(/\/checkout$/);
     await expect(page.getByTestId('checkout-order-status')).toContainText('รอชำระเงิน');
+    const orderId = (await page.getByTestId('checkout-order-id').textContent())!.trim();
 
     await page.getByTestId('cancel-checkout-button').click();
     await expect(page).toHaveURL(/\/cart$/);
@@ -431,6 +404,11 @@ test('AC-12:Given cus_normal อยู่ stage ชำระเงิน กั�
     await page.getByTestId('nav-cart').click();
     await expect(page.getByTestId('cart-subtotal')).toContainText('฿3,600');
     await expect(page.getByTestId('cart-line-P2').getByTestId('cart-line-qty-input')).toHaveValue('3')
+
+    await page.getByTestId('nav-orders').click();
+    const orderRow = page.getByTestId(`order-row-${orderId}`);
+    await expect(orderRow).toBeVisible();
+    await expect(orderRow.getByTestId('order-status')).toHaveText('ยกเลิก');
 });
 
 test('AC-13: Given cus_normal มีออเดอร์สถานะ รอชำระเงิน ที่มี P1 ราคา 450 When admin01 เรียก updateProduct(P1, price = 500) Then viewOrder ของออเดอร์นั้นยังแสดงราคา P1 = 450 และ viewCart ของ Customer ที่มี P1 ในตะกร้าแสดงราคา 500', async ({ page }) => {
@@ -465,6 +443,7 @@ test('AC-14: Given cus_normal login แล้ว When เรียก updateProd
     await page.goto(`${baseURL}/admin/products`);
 
     await expect(page).toHaveURL(/\/login/);
+    await expect(page.getByTestId('app-message')).toContainText('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
 
     await loginAsAdmin(page);
     await page.getByTestId('nav-admin-products').click();
@@ -475,21 +454,26 @@ test('AC-14: Given cus_normal login แล้ว When เรียก updateProd
 });
 
 test('AC-15:  Given cus_normal มีออเดอร์ที่มี orderId = X When cus_prime เรียก viewOrder(X) Then ระบบปฏิเสธด้วย ORDER_NOT_FOUND', async ({ page }) => {
+    const orderId = 'ORD-000001';
     await addProductAndCheckoutAsCustomer_Normal(page, 'cus_normal', 'P1', 1);
 
     // ตรวจเช็คออเดอร์ของ cus_normal
     await loginAsNormalCustomer(page);
     await page.getByTestId('nav-orders').click();
+
+    const orderRow = page.getByTestId(`order-row-${orderId}`);
+    await expect(orderRow.getByTestId(`order-id-${orderId}`)).toHaveText(orderId);
     await page.getByTestId('order-view').click();
-    await expect(page.getByTestId('order-id-ORD-000001')).toContainText('ORD-000001');
-    await expect(page.getByTestId('order-line-P1').getByTestId('order-line-unit-price'),).toContainText('฿450')
+
+    await expect(page.getByTestId('order-detail-id')).toHaveText(orderId);
+    await expect(page.getByTestId('order-line-P1').getByTestId('order-line-unit-price'),).toContainText('฿450');
     await page.getByTestId('logout-button').click();
 
     // ตรวจเช็คออเดอร์ของ cus_prime
     await loginAsPrimeCustomer(page);
     await page.getByTestId('nav-orders').click();
-    await expect(page.getByTestId(/^order-id-ORD-/)).toHaveCount(0);
-    await expect(page.getByRole('paragraph')).toContainText('ยังไม่มีออเดอร์');
+    await page.goto(`${baseURL}/orders/${orderId}`);
+    await expect(page.getByTestId('app-message')).toContainText('ไม่พบออเดอร์');
 });
 
 test('AC-16: Given admin01 login แล้ว When เรียก updateProduct(P1, price = 0, stock = 10000) Then ระบบปฏิเสธด้วย VALIDATION_ERROR ระบุฟิลด์ [price, stock] และ P1 ยังมีราคา 450 สต็อกพร้อมขาย 20', async ({ page }) => {
