@@ -8,272 +8,303 @@ test('has title', async ({ page }) => {
     await expect(page).toHaveTitle('Roast & Roll');
 });
 // ##################### FR-0.1 การ Login ######################## 
-test('FR-0.1.1 valid login credentials with customer_normal role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('cus_normal');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('123456');
-    await page.getByTestId('login-submit').click();
-    await expect(page.getByText('cus_normal')).toBeVisible();
-    await expect(page.getByText('customer')).toBeVisible();
-    await expect(page.getByTestId('nav-products')).toBeVisible();
-    await expect(page.getByTestId('nav-cart')).toBeVisible();
-    await expect(page.getByTestId('nav-orders')).toBeVisible();
-});
+test.describe('FR-0.1 การ Login', () => {
+    test('FR-0.1.1 valid login credentials with customer_normal role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('cus_normal');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('123456');
+        await page.getByTestId('login-submit').click();
+        await expect(page.getByText('cus_normal')).toBeVisible();
+        await expect(page.getByText('customer')).toBeVisible();
+        await expect(page.getByTestId('nav-products')).toBeVisible();
+        await expect(page.getByTestId('nav-cart')).toBeVisible();
+        await expect(page.getByTestId('nav-orders')).toBeVisible();
+    });
 
-test('FR-0.1.1 valid login credentials with customer_prime role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('cus_prime');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('123456');
-    await page.getByTestId('login-submit').click();
-    await expect(page.getByText('cus_prime')).toBeVisible();
-    await expect(page.getByText('customer')).toBeVisible();
-    await expect(page.getByTestId('nav-products')).toBeVisible();
-    await expect(page.getByTestId('nav-cart')).toBeVisible();
-    await expect(page.getByTestId('nav-orders')).toBeVisible();
-});
+    test('FR-0.1.1 valid login credentials with customer_prime role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('cus_prime');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('123456');
+        await page.getByTestId('login-submit').click();
+        await expect(page.getByText('cus_prime')).toBeVisible();
+        await expect(page.getByText('customer')).toBeVisible();
+        await expect(page.getByTestId('nav-products')).toBeVisible();
+        await expect(page.getByTestId('nav-cart')).toBeVisible();
+        await expect(page.getByTestId('nav-orders')).toBeVisible();
+    });
 
-test('FR-0.1.1 valid login credentials with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('admin01');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('admin123');
-    await page.getByTestId('login-submit').click();
-    await expect(page.getByText('admin01')).toBeVisible();
-    await expect(page.getByText('ผู้ดูแล')).toBeVisible();
-    await expect(page.getByTestId('nav-admin-products')).toBeVisible();
-    await expect(page.getByTestId('nav-admin-coupons')).toBeVisible();
-});
+    test('FR-0.1.1 valid login credentials with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('admin01');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('admin123');
+        await page.getByTestId('login-submit').click();
+        await expect(page.getByText('admin01')).toBeVisible();
+        await expect(page.getByText('ผู้ดูแล')).toBeVisible();
+        await expect(page.getByTestId('nav-admin-products')).toBeVisible();
+        await expect(page.getByTestId('nav-admin-coupons')).toBeVisible();
+    });
 
-test('FR-0.1.2 invalid login credentials', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('cus_normal');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('12345');
-    await page.getByTestId('login-submit').click();
-    await expect(page.getByTestId('app-message')).toContainText('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
-});
+    test('FR-0.1.2 invalid login credentials', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('cus_normal');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('12345');
+        await page.getByTestId('login-submit').click();
+        await expect(page.getByTestId('app-message')).toContainText('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_INVALID_CREDENTIALS');
+    });
 
-test('FR-0.1.2 don\'t fill username', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('12345');
-    await page.getByTestId('login-submit').click();
-    await expect(page.locator('#login-username-error')).toContainText('กรุณากรอก Username');
-});
+    test('FR-0.1.2 don\'t fill username', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('12345');
+        await page.getByTestId('login-submit').click();
+        await expect(page.locator('#login-username-error')).toContainText('กรุณากรอก Username');
+    });
 
-test('FR-0.1.2 don\'t fill password', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('cus_normal');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('');
-    await page.getByTestId('login-submit').click();
-    await expect(page.locator('#login-password-error')).toContainText('กรุณากรอก Password');
-});
+    test('FR-0.1.2 don\'t fill password', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('cus_normal');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('');
+        await page.getByTestId('login-submit').click();
+        await expect(page.locator('#login-password-error')).toContainText('กรุณากรอก Password');
+    });
 
-test('FR-0.1.2 don\'t fill all fields', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await page.getByTestId('login-username').click();
-    await page.getByTestId('login-username').fill('');
-    await page.getByTestId('login-password').click();
-    await page.getByTestId('login-password').fill('');
-    await page.getByTestId('login-submit').click();
-    await expect(page.locator('#login-username-error')).toContainText('กรุณากรอก Username');
-    await expect(page.locator('#login-password-error')).toContainText('กรุณากรอก Password');
+    test('FR-0.1.2 don\'t fill all fields', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await page.getByTestId('login-username').click();
+        await page.getByTestId('login-username').fill('');
+        await page.getByTestId('login-password').click();
+        await page.getByTestId('login-password').fill('');
+        await page.getByTestId('login-submit').click();
+        await expect(page.locator('#login-username-error')).toContainText('กรุณากรอก Username');
+        await expect(page.locator('#login-password-error')).toContainText('กรุณากรอก Password');
+    });
 });
 
 // ##################### FR-0.2 การเข้าถึงเว็บไซต์โดยไม่ต้อง login ######################## 
-test('FR-0.2 access /products without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/products');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+test.describe('FR-0.2 การเข้าถึงเว็บไซต์โดยไม่ต้อง login', () => {
+    test('FR-0.2 access /products without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/products');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /cart without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/cart');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+    test('FR-0.2 access /cart without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/cart');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /checkout without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/checkout');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+    test('FR-0.2 access /checkout without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/checkout');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /success without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/success');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+    test('FR-0.2 access /success without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/success');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /orders without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/orders');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+    test('FR-0.2 access /orders without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/orders');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /orders/{id} without login', async ({ page }) => {
-    await page.goto(`http://localhost:3000/orders/ORD-000001`);
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+    test('FR-0.2 access /orders/{id} without login', async ({ page }) => {
+        await page.goto(`http://localhost:3000/orders/ORD-000001`);
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /admin/products without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/admin/products');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
-});
+    test('FR-0.2 access /admin/products without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/admin/products');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 
-test('FR-0.2 access /admin/coupons without login', async ({ page }) => {
-    await page.goto('http://localhost:3000/admin/coupons');
-    await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+    test('FR-0.2 access /admin/coupons without login', async ({ page }) => {
+        await page.goto('http://localhost:3000/admin/coupons');
+        await expect(page.getByTestId('app-message')).toContainText('กรุณาเข้าสู่ระบบก่อน');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_REQUIRED');
+    });
 });
 
 // ##################### FR-0.3 ตรวจสอบสิทธิ์การเข้าถึง ######################## 
-test('FR-0.3.1 access /products with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await loginadmin(page);
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
+test.describe('FR-0.3 ตรวจสอบสิทธิ์การเข้าถึง', () => {
+    test('FR-0.3.1 access /products with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await loginadmin(page);
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/products');
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/products');
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.1 access /carts with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await loginadmin(page);
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
+    test('FR-0.3.1 access /carts with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await loginadmin(page);
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/cart');
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/cart');
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.1 access /checkout with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await loginadmin(page);
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
+    test('FR-0.3.1 access /checkout with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await loginadmin(page);
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/checkout');
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/checkout');
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.1 access /success with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await loginadmin(page);
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
+    test('FR-0.3.1 access /success with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await loginadmin(page);
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/success');
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/success');
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.1 access /orders with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await loginadmin(page);
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
+    test('FR-0.3.1 access /orders with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await loginadmin(page);
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/orders');
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/orders');
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.1 access /orders/{id} with admin role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await loginadmin(page);
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
+    test('FR-0.3.1 access /orders/{id} with admin role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await loginadmin(page);
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/orders/ORD-000001');
-    await expect(page).toHaveURL(/\/admin\/products$/);
-    await expect(page.getByTestId('page-admin-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/orders/ORD-000001');
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        await expect(page.getByTestId('page-admin-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.2 access /admin/products with customer role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await logincus_normal(page);
-    await expect(page).toHaveURL(/\/products$/);
-    await expect(page.getByTestId('page-products')).toBeVisible();
+    test('FR-0.3.2 access /admin/products with customer role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await logincus_normal(page);
+        await expect(page).toHaveURL(/\/products$/);
+        await expect(page.getByTestId('page-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/admin/products');
-    await expect(page).toHaveURL(/\/products$/);
-    await expect(page.getByTestId('page-products')).toBeVisible();
-});
+        await page.goto('http://localhost:3000/admin/products');
+        await expect(page).toHaveURL(/\/products$/);
+        await expect(page.getByTestId('page-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 
-test('FR-0.3.2 access /admin/coupons with customer role', async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-    await logincus_normal(page);
-    await expect(page).toHaveURL(/\/products$/);
-    await expect(page.getByTestId('page-products')).toBeVisible();
+    test('FR-0.3.2 access /admin/coupons with customer role', async ({ page }) => {
+        await page.goto('http://localhost:3000/');
+        await logincus_normal(page);
+        await expect(page).toHaveURL(/\/products$/);
+        await expect(page.getByTestId('page-products')).toBeVisible();
 
-    await page.goto('http://localhost:3000/admin/coupons');
-    await expect(page).toHaveURL(/\/products$/);
-    await expect(page.getByTestId('page-products')).toBeVisible();
+        await page.goto('http://localhost:3000/admin/coupons');
+        await expect(page).toHaveURL(/\/products$/);
+        await expect(page.getByTestId('page-products')).toBeVisible();
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'AUTH_FORBIDDEN');
+    });
 });
 
 // ##################### FR-0.4 Operation ต้องแยกตาม Customer ######################## 
-test('FR-0.4 operation by cus_normal ต้องไม่รบกวน state ของ cus_prime', async ({ page }) => {
-    // Login as cus_normal
-    await page.goto('http://localhost:3000/');
-    await logincus_normal(page);
-    await page.getByTestId('product-row-P1').getByTestId('product-qty-increase').click();
-    await page.getByTestId('product-row-P1').getByTestId('product-add-button').click();
-    // Logout
-    await page.getByRole('link', { name: 'ออกจากระบบ' }).click();
+test.describe('FR-0.4 Operation ต้องแยกตาม Customer', () => {
+    test('FR-0.4 operation by cus_normal ต้องไม่รบกวน state ของ cus_prime', async ({ page }) => {
+        // Login as cus_normal
+        await page.goto('http://localhost:3000/');
+        await logincus_normal(page);
+        await page.getByTestId('product-row-P1').getByTestId('product-qty-increase').click();
+        await page.getByTestId('product-row-P1').getByTestId('product-add-button').click();
+        // Logout
+        await page.getByTestId('logout-button').click();
 
-    // Login as cus_prime
-    await logincus_prime(page);
-    // ตรวจเช็คตระกร้า
-    await expect(page.getByTestId('nav-cart').locator('span')).toContainText('0');
+        // Login as cus_prime
+        await logincus_prime(page);
+        // ตรวจเช็คตระกร้า
+        await expect(page.getByTestId('nav-cart').locator('span')).toContainText('0');
+    });
 });
-
 // ##################### FR-0.5 การมองเห็นออเดอร์ ########################
-test('FR-0.5.1 ต้องแสดงออเดอร์เฉพาะของตนเองเท่านั้น', async ({ page }) => {
-    // Login as cus_normal
-    await page.goto('http://localhost:3000/');
-    await logincus_normal(page);
-    await createPaidOrder(page);
-    // ตรวจเช็คออเดอร์ของ cus_normal
-    await page.goto(`http://localhost:3000/orders/`);
-    await expect(page.getByTestId('order-row-ORD-000001')).toBeVisible();
+test.describe('FR-0.5 การมองเห็นออเดอร์', () => {
+    test('FR-0.5.1 ต้องแสดงออเดอร์เฉพาะของตนเองเท่านั้น', async ({ page }) => {
+        // Login as cus_normal
+        await page.goto('http://localhost:3000/');
+        await logincus_normal(page);
+        await createPaidOrder(page);
+        // ตรวจเช็คออเดอร์ของ cus_normal
+        await page.goto(`http://localhost:3000/orders/`);
+        await expect(page.getByTestId('order-row-ORD-000001')).toBeVisible();
 
-    // Login as cus_prime
-    await page.getByRole('link', { name: 'ออกจากระบบ' }).click();
-    await logincus_prime(page);
-    await createPaidOrder(page);
-    // ตรวจเช็คออเดอร์ของ cus_prime
-    await page.goto(`http://localhost:3000/orders/`);
-    await expect(page.getByTestId('order-row-ORD-000001')).not.toBeVisible();
-    await expect(page.getByTestId('order-row-ORD-000002')).toBeVisible();
+        // Login as cus_prime
+        await page.getByTestId('logout-button').click();
+        await logincus_prime(page);
+        await createPaidOrder(page);
+        // ตรวจเช็คออเดอร์ของ cus_prime
+        await page.goto(`http://localhost:3000/orders/`);
+        await expect(page.getByTestId('order-row-ORD-000001')).not.toBeVisible();
+        await expect(page.getByTestId('order-row-ORD-000002')).toBeVisible();
+    });
+
+    test('FR-0.5.2 ต้องไม่สามารถเข้าถึงออเดอร์ของผู้อื่นได้', async ({ page }) => {
+        // Login as cus_normal
+        await page.goto('http://localhost:3000/');
+        await logincus_normal(page);
+        const order = await createPaidOrder(page);
+        // ตรวจเช็คออเดอร์ของ cus_normal
+        await page.goto(`http://localhost:3000/orders/${order}`);
+        await expect(page.getByTestId('order-detail-id')).toBeVisible();
+
+        // Login as cus_prime
+        await page.getByTestId('logout-button').click();
+        await logincus_prime(page);
+        await createPaidOrder(page);
+        // ตรวจเช็คออเดอร์ของ cus_prime
+        await page.goto(`http://localhost:3000/orders/${order}`);
+        await expect(page.getByTestId('app-message')).toContainText('ไม่พบออเดอร์');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'ORDER_NOT_FOUND');
+
+        // orderId ที่ไม่มีอยู่ต้องให้ error code เดียวกับ order ของผู้อื่น
+        await page.goto('http://localhost:3000/orders/ORD-999999');
+        await expect(page.getByTestId('app-message')).toContainText('ไม่พบออเดอร์');
+        await expect(page.getByTestId('app-message')).toHaveAttribute('data-code', 'ORDER_NOT_FOUND');
+    });
 });
-
-test('FR-0.5.2 ต้องไม่สามารถเข้าถึงออเดอร์ของผู้อื่นได้', async ({ page }) => {
-    // Login as cus_normal
-    await page.goto('http://localhost:3000/');
-    await logincus_normal(page);
-    const order = await createPaidOrder(page);
-    // ตรวจเช็คออเดอร์ของ cus_normal
-    await page.goto(`http://localhost:3000/orders/${order}`);
-    await expect(page.getByTestId('order-detail-id')).toBeVisible();
-
-    // Login as cus_prime
-    await page.getByRole('link', { name: 'ออกจากระบบ' }).click();
-    await logincus_prime(page);
-    await createPaidOrder(page);
-    // ตรวจเช็คออเดอร์ของ cus_prime
-    await page.goto(`http://localhost:3000/orders/${order}`);
-    await expect(page.getByTestId('app-message')).toContainText('ไม่พบออเดอร์');
-});
-
 // ##################### FR-0.6 ออเดอร์เรียงจากใหม่ไปเก่า ########################
 test('FR-0.6 order list should be sorted by created date desc', async ({ page }) => {
     // Login as cus_normal
